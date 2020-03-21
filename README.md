@@ -2,6 +2,9 @@
 
 webcomponent to submit from data through ajax request
 
+## Features
+
+* Lightweight webcomponent, no framework, no dependencies, just one javascript (see `dist` folder)  
 
 ## Usage
 
