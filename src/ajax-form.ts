@@ -98,12 +98,13 @@ export class AjaxFormElement extends HTMLElement {
                     referrerPolicy: 'no-referrer', // no-referrer, *client
                     body: JSON.stringify(data) // body data type must match "Content-Type" header
                 })
-                .then( res => this._fire(  (!res.ok) ? 'ajax-form.error' : 'ajax-form.success', { message:res.statusText, res:res } ))
-                .catch( err => this._fire( 'ajax-form.error', { message:err.message, err:err} ))
+                .then( res => Promise.all( [res.text(), Promise.resolve(res)] ) )
+                .then( ([ text, res] ) =>  this._fire(  (!res.ok) ? 'ajax-form.error' : 'ajax-form.success', { message:() => text===''?res.statusText:text, res:res } ))
+                .catch( err => this._fire( 'ajax-form.error', { message: () => err.message, err:err } ))
 
             }
             catch( err ) {
-                this._fire( 'ajax-form.error',  { message:err.message, err:err}  );
+                this._fire( 'ajax-form.error',  { message: () => err.message, err:err }  );
             }
 
         }
