@@ -21,3 +21,20 @@ webcomponent to submit from data through ajax request
         </form>    
     </ajax-form>
 ```
+
+### Events
+
+event name | description | event detail
+---- | ---- | ---
+`ajax-form.error` | raised on submission error |  `{ message:function, err?:Error, res?:Response }` 
+`ajax-form.success` | raised on submission success  | `{ message:function, res:Response }`
+
+### Handling Event 
+
+```javascript
+    document.addEventListener( 'ajax-form.error', function( event ) {
+        console.dir( event );
+        alert( event.detail.message() )
+    })
+
+```
