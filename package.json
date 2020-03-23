@@ -4,8 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "serve": "parcel index.html",
-    "build": "parcel build index.html --public-url . "
+    "serve": "parcel serve --out-dir ./test index.html",
+    "clean": "rm -rf ./dist/",
+    "build": "parcel build ./src/ajax-form.ts"
   },
   "author": "",
   "license": "ISC",

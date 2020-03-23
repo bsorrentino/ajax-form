@@ -5,8 +5,35 @@ type FormData = {
 
 // @see
 // https://dev.to/aspittel/building-web-components-with-vanilla-javascript--jho
-// https://www.codementor.io/ayushgupta/vanilla-js-web-components-chguq8goz
+
 export class AjaxFormElement extends HTMLElement {
+
+    /*
+    static get observedAttributes() {
+        return ['method', 'mode'];
+    }
+    
+    get method():string {   
+        return this.getAttribute('method') || 'POST';
+    }
+
+    set method( value:string ) {
+        this.setAttribute( 'method', value );
+    }
+
+    get mode():string {   
+        return this.getAttribute('onError') || 'cors';
+    }
+
+    set mode( value:string ) {
+        this.setAttribute( 'mode', value );
+    }
+
+    attributeChangedCallback(name:string, oldValue:string, newValue:string) { 
+
+        console.log( name, oldValue, newValue)
+    }
+    */
 
     private _form?:HTMLFormElement
 
@@ -15,6 +42,7 @@ export class AjaxFormElement extends HTMLElement {
 
         //this.attachShadow( { mode: 'open'} )
         //this.shadowRoot?.appendChild( this.template.content.cloneNode(true) )
+
     }
 
     private _serializeFormToJson():FormData|null {
@@ -39,7 +67,11 @@ export class AjaxFormElement extends HTMLElement {
 
     }
 
-    private _submit( event:Event ) {
+    private _fire( event:string, data:any, bubbles = true ) {
+        this.dispatchEvent(new CustomEvent(event , {bubbles: bubbles, detail: data} ));
+    }
+
+    public submit( event?:Event ) {
         if (event) {
             event.preventDefault();
         }
@@ -51,11 +83,12 @@ export class AjaxFormElement extends HTMLElement {
 
             const data = this._serializeFormToJson()
             
-            console.dir( data )
+            //console.dir( data )
 
-            fetch( this._form.action, {
+            try  {
+                fetch( this._form.action, {
                     method: 'POST', // *GET, POST, PUT, DELETE, etc.
-                    mode: 'cors', // no-cors, *cors, same-origin
+                    //mode: 'cors', // no-cors, *cors, same-origin
                     //cache: 'no-cache', // *default, no-cache, reload, force-cache, only-if-cached
                     //credentials: 'same-origin', // include, *same-origin, omit
                     headers: {
@@ -65,31 +98,36 @@ export class AjaxFormElement extends HTMLElement {
                     referrerPolicy: 'no-referrer', // no-referrer, *client
                     body: JSON.stringify(data) // body data type must match "Content-Type" header
                 })
-                .then( res => {
-                    console.dir( res )
-                })
-                .catch( err => {
-                    console.error( err )
-                })
+                .then( res => this._fire(  (!res.ok) ? 'ajax-form.error' : 'ajax-form.success', { message:res.statusText, res:res } ))
+                .catch( err => this._fire( 'ajax-form.error', { message:err.message, err:err} ))
+
+            }
+            catch( err ) {
+                this._fire( 'ajax-form.error',  { message:err.message, err:err}  );
+            }
 
         }
         
+        return false
 
     }
 
-    private _reset( event:Event ) {
+    public reset( event?:Event ) {
         if (event) {
             event.preventDefault();
           }
 
           console.log( event )
+          if( this._form ) {
+              this._form.reset()
+          }
       
     }
     private _init() {
         if( this._form ) {
             console.log( 'init' )
-            this._form.addEventListener('submit',  ev => this._submit(ev) )
-            this._form.addEventListener('reset', ev => this._reset(ev) )
+            this._form.addEventListener('submit',  ev => this.submit(ev) )
+            this._form.addEventListener('reset', ev => this.reset(ev) )
         }
     }
 
@@ -124,5 +162,5 @@ try {
     customElements.define('ajax-form', AjaxFormElement);
 
 } catch (err) {
-    console.error( err );
+    console.dir( err );
 }
