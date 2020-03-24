@@ -11,9 +11,22 @@
 <body>
 
     <script>
-        document.addEventListener( 'ajax-form.error', function( err ) {
-            console.dir( err );
-            alert( err.detail.message() )
+        document.addEventListener( 'ajax-form.result', function( ev ) {
+            console.dir( ev.detail );
+
+            if( !ev.detail.ok) {
+                alert( ev.detail.statusText )
+            }
+            else {
+                ev.detail.text().then( function(text) {
+                    alert( text );
+                })
+
+            }
+        })
+        document.addEventListener( 'ajax-form.error', function( ev ) {
+            console.dir( ev.detail );
+            alert( ev.detail.message )
         })
 
     </script>

@@ -26,15 +26,28 @@ webcomponent to submit from data through ajax request
 
 event name | description | event detail
 ---- | ---- | ---
-`ajax-form.error` | raised on submission error |  `{ message:function, err?:Error, res?:Response }` 
-`ajax-form.success` | raised on submission success  | `{ message:function, res:Response }`
+`ajax-form.error` | raised on submission error |  `Error` 
+`ajax-form.result` | raised on submission success  | [`Response`](https://developer.mozilla.org/en-US/docs/Web/API/Response)
 
 ### Handling Event 
 
 ```javascript
-    document.addEventListener( 'ajax-form.error', function( event ) {
-        console.dir( event );
-        alert( event.detail.message() )
-    })
+        document.addEventListener( 'ajax-form.result', function( ev ) {
+            console.dir( ev.detail );
+
+            if( !ev.detail.ok) {
+                alert( ev.detail.statusText )
+            }
+            else {
+                ev.detail.text().then( function(text) {
+                    alert( text );
+                })
+
+            }
+        })
+        document.addEventListener( 'ajax-form.error', function( ev ) {
+            console.dir( ev.detail );
+            alert( ev.detail.message )
+        })
 
 ```
