@@ -5,7 +5,7 @@ webcomponent to submit from data through ajax request
 ## Features
 
 * Lightweight webcomponent, no framework, no dependencies, just one javascript (see `dist` folder) 
-* On submit, form's data are formatted as JSON object and sent through POST call without redirect 
+* On submit, form's data are formatted as JSON object and sent through `POST` call without redirect 
 
 ## Usage
 
