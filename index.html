@@ -11,6 +11,7 @@
 <body>
 
     <script>
+    function init() {
         document.addEventListener( 'ajax-form.result', function( ev ) {
             console.dir( ev.detail );
 
@@ -29,11 +30,68 @@
             alert( ev.detail.message )
         })
 
+        var form_redirect = document.getElementById('form-redirect')
+        if( form_redirect ) {
+
+            form_redirect.addEventListener( 'ajax-form.result', function( ev ) {
+                var res = ev.detail
+                
+                if( !res.ok) {
+                    alert( res.statusText )
+                    return
+                }
+                
+                if( res.redirected ) {
+                    console.log( res.url )
+                    window.location.href = res.url
+                }
+            })
+        }  
+
+        var form_replace = document.getElementById('form-replace')
+        if( form_replace ) {
+
+            form_replace.addEventListener( 'ajax-form.result', function( ev ) {
+                var res = ev.detail
+                
+                if( !res.ok) {
+                    alert( res.statusText )
+                    return
+                }
+                
+                res.text().then( function(text) {
+
+                    document.open()
+                    document.write(text)
+                    document.close()
+                })
+            })
+        }             
+
+    }
+    document.addEventListener('DOMContentLoaded', init );
     </script>
     <h2>ajax-form element demo</h2>
 
     <ajax-form >
-        <form action="/post">
+        <h3>POST</h3>
+        <form action="/api/echo">
+            <input type="text" name="name" required/>
+            <input type="submit" text="Submit" />
+        </form>    
+    </ajax-form>
+
+    <ajax-form id="form-redirect" event-bubbles='false' >
+        <h3>POST and redirect</h3>
+        <form action="/api/echo?redirect=true">
+            <input type="text" name="name" required/>
+            <input type="submit" text="Submit" />
+        </form>    
+    </ajax-form>
+
+    <ajax-form id="form-replace" event-bubbles='false' >
+        <h3>POST and replace</h3>
+        <form action="/api/echo?replace=true">
             <input type="text" name="name" required/>
             <input type="submit" text="Submit" />
         </form>    

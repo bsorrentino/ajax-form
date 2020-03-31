@@ -8,11 +8,25 @@ type FormData = {
 
 export class AjaxFormElement extends HTMLElement {
 
-    /*
-    static get observedAttributes() {
-        return ['method', 'mode'];
+    get bubbles():boolean {   
+        return Boolean(JSON.parse(this.getAttribute('event-bubbles') || 'true'))
     }
-    
+
+    set bubbles( value:boolean ) {
+        this.setAttribute( 'event-bubbles', String(value) );
+    }
+
+
+    static get observedAttributes() {
+        return ['event-bubbles'];
+    }
+
+    attributeChangedCallback(name:string, oldValue:string, newValue:string) { 
+
+        console.log( name, oldValue, newValue)
+    }
+
+    /*
     get method():string {   
         return this.getAttribute('method') || 'POST';
     }
@@ -29,10 +43,6 @@ export class AjaxFormElement extends HTMLElement {
         this.setAttribute( 'mode', value );
     }
 
-    attributeChangedCallback(name:string, oldValue:string, newValue:string) { 
-
-        console.log( name, oldValue, newValue)
-    }
     */
 
     private _form?:HTMLFormElement
@@ -58,8 +68,9 @@ export class AjaxFormElement extends HTMLElement {
                 const input = node as HTMLInputElement
 
                 if( input.name.length > 0 ) {
-                    result[input.id] = input.value
+                    result[input.name] = input.value
                 }
+
             } 
         })
 
@@ -67,8 +78,10 @@ export class AjaxFormElement extends HTMLElement {
 
     }
 
-    private _fire( event:string, data:any, bubbles = true ) {
-        this.dispatchEvent(new CustomEvent(event , {bubbles: bubbles, detail: data} ));
+    private _fire( event:string, data:any ) {
+        const b = this.bubbles
+        console.log( b )
+        this.dispatchEvent(new CustomEvent(event , { bubbles: b, detail: data} ));
     }
 
     public submit( event?:Event ) {
