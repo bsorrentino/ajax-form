@@ -63,7 +63,7 @@ export class AjaxFormElement extends HTMLElement {
         let result:FormData = {}
         this._form.childNodes.forEach( node => {
 
-            if( node.nodeType === this.ELEMENT_NODE && node.nodeName === 'INPUT' ) {
+            if( node.nodeType === this.ELEMENT_NODE && (node.nodeName === 'INPUT'|| node.nodeName === 'SELECT') ) {
 
                 const input = node as HTMLInputElement
 
