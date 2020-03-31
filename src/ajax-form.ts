@@ -65,7 +65,7 @@ export class AjaxFormElement extends HTMLElement {
 
             if( node.nodeType === this.ELEMENT_NODE && (node.nodeName === 'INPUT'|| node.nodeName === 'SELECT') ) {
 
-                const input = node as HTMLInputElement
+                const input = node as HTMLSelectElement|HTMLInputElement
 
                 if( input.name.length > 0 ) {
                     result[input.name] = input.value
