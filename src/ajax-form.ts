@@ -100,7 +100,9 @@ export class AjaxFormElement extends HTMLElement {
             return
         }
 
-        if( this._form.reportValidity() ) {
+        const valid = this._form.reportValidity()
+        console.log( 'valid', valid )
+        if( valid ) {
             this._onSubmit()
         }
 

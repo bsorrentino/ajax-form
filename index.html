@@ -101,5 +101,13 @@
             <input type="submit" text="Submit" />
         </form>    
     </ajax-form>
+
+    <ajax-form>
+        <h3>Programmatically submit</h3>
+        <form id="form-sumbit-by-js" action="/api/echo">
+            <input type="text" name="name" required/>
+        </form>    
+    </ajax-form>
+    <a href="#!" onclick="document.getElementById('form-sumbit-by-js').requestSubmit()">Submit By Javascript</a>
 </body>
 </html>
