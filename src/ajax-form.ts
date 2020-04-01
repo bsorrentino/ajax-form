@@ -95,7 +95,17 @@ export class AjaxFormElement extends HTMLElement {
         this.dispatchEvent(new CustomEvent(event , { bubbles: b, detail: data} ));
     }
 
-    public submit( event?:Event ) {
+    public submit() {
+        if( !this._form ) {
+            return
+        }
+
+        if( this._form.reportValidity() ) {
+            this._onSubmit()
+        }
+
+    }
+    private _onSubmit( event?:Event ) {
         if( !this._form ) {
             return
         }
@@ -105,6 +115,7 @@ export class AjaxFormElement extends HTMLElement {
             event.preventDefault();
         }
 
+        
         const data = this._serializeFormToJson()   
         //console.dir( data )
 
@@ -145,7 +156,7 @@ export class AjaxFormElement extends HTMLElement {
     private _init() {
         if( this._form ) {
             console.log( 'init' )
-            this._form.addEventListener('submit',  ev => this.submit(ev) )
+            this._form.addEventListener('submit',  ev => this._onSubmit(ev) )
             this._form.addEventListener('reset', ev => this.reset(ev) )
         }
     }
