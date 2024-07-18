@@ -50,8 +50,8 @@ export class AjaxFormElement extends HTMLElement {
     constructor() {
         super()
 
-        //this.attachShadow( { mode: 'open'} )
-        //this.shadowRoot?.appendChild( this.template.content.cloneNode(true) )
+        this.attachShadow( { mode: 'open'} )
+        this.shadowRoot?.appendChild( this.template.content.cloneNode(true) )
 
     }
 
@@ -101,7 +101,9 @@ export class AjaxFormElement extends HTMLElement {
         }
 
         const valid = this._form.reportValidity()
-        console.log( 'valid', valid )
+
+        console.debug( 'valid', valid )
+        
         if( valid ) {
             this._onSubmit()
         }
@@ -165,24 +167,34 @@ export class AjaxFormElement extends HTMLElement {
 
     connectedCallback () {
 
-        const observer = new MutationObserver( (mutations) => {
-            const result = mutations.find( record => record.addedNodes[0].nodeName === 'FORM' )
-            if( result ) {
-                this._form = result.addedNodes[0] as HTMLFormElement
-                this._init()
-            }  
-            observer.disconnect()        
-        });
+        // const observer = new MutationObserver( (mutations) => {
+        //     const result = mutations.find( record => record.addedNodes[0].nodeName === 'FORM' )
+        //     if( result ) {                
+        //         this._form = result.addedNodes[0] as HTMLFormElement
+        //         this._init()
+        //     }  
+        //     observer.disconnect()        
+        // });
+        // observer.observe( this , { childList:true } )
 
-        observer.observe( this , { childList:true } )
+        const form = this.querySelector( "form" ) as HTMLFormElement;
+        if( !form ) {
+            throw new Error("FORM element not found in slot")
+        }
+        
+        this._form = form;
+        this._init()
 
       }
+
+    disconnectedCallback () {
+    }
 
     get template():HTMLTemplateElement {
         const template = document.createElement('template');
 
         template.innerHTML = `
-          <slot></slot>
+          <slot name="form">FORM</slot>
         `;
 
         return template
