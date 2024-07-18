@@ -14,7 +14,7 @@ webcomponent to submit from data through ajax request
     <h2>ajax-form element demo</h2>
 
     <ajax-form>
-        <form action="/post">
+        <form slot="form" action="/post">
             <input type="hidden" name="name" value="myname" >
             <input type="text" name="value" />
             <input type="submit" text="Submit" />
